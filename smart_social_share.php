@@ -15,6 +15,8 @@ class SmartSocialShare {
 	const DOMAIN = 'smart-social-share';
 	const OPTIONS = 'smart-social-share-options';
 
+	public $button_kind_menu;
+
 	function __construct() {
 		add_action('wp_enqueue_scripts', array($this, 'add_scripts'));
 		add_action('wp_footer', array($this, 'add_fb_script'));
@@ -23,6 +25,8 @@ class SmartSocialShare {
 		// 設定
 		add_action('admin_menu', array($this, 'plugin_menu'));
 		add_action('admin_init', array($this, 'settings_api_init'));
+
+		$this->button_kind_menu = array('none' => _('ボタンのみ'), 'button_count' => __('カウントあり（横）'), 'box_count' => __('カウントあり（縦）'));
 
 //		delete_option(self::OPTIONS);
 		$opts = get_option(self::OPTIONS);
@@ -77,16 +81,22 @@ class SmartSocialShare {
 		echo '<p>Intro text for our settings section</p>';
 	}
 
+	/// select タグでプルダウンメニューを作成する
+	function select_option($menu, $value, $name) {
+		echo '<select name="'.$name.'">';
+
+		foreach ( $menu as $key => $text ) {
+			echo '<option value="'.$key.'" '.selected($value, $key).'>'.esc_html($text).'</option>';
+		}
+
+		echo '</select>';
+	}
+
 	function setting_custom_button($key) {
 		$opts = get_option(self::OPTIONS);
 		$value = $opts[$key];
-		?>
-		<select name="<?php echo self::OPTIONS."[$key]"; ?>">
-			<option value="none" <?php selected( $value, 'none' ); ?>>ボタンのみ</option>
-			<option value="button_count" <?php selected( $value, 'button_count' ); ?>>カウントあり（横）</option>
-			<option value="box_count" <?php selected( $value, 'box_count' ); ?>>カウントあり（縦）</option>
-		</select>
-		<?php
+
+		$this->select_option($this->button_kind_menu, $value, self::OPTIONS."[$key]");
 	}
 
 	function setting_custom_home() {
