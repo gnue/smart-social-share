@@ -12,10 +12,10 @@ License: (ライセンス名の「スラッグ」 例: GPL2)
 
 class SmartSocialShare {
 	const CSS_FILE = 'smart_social_share.css';
-	const OPTION_GROUP = 'smart-social-share-options';
-	const OPTION_NAME = 'smart-social-share-options';
-	const SETTING_SECTION = 'smart-social-share-section';
-	const SETTING_PAGE = 'smart-social-share-page';
+	const OPTION_GROUP = 'smart_social_share_options';
+	const OPTION_NAME = 'smart_social_share_options';
+	const SETTING_SECTION = 'smart_social_share_options';
+	const SETTING_PAGE = 'smart_social_share_page';
 
 	public $button_kind_menu;
 
