@@ -27,15 +27,13 @@ class SmartSocialShare {
 		// 設定
 		add_action('admin_menu', array($this, 'plugin_menu'));
 		add_action('admin_init', array($this, 'settings_api_init'));
-
-		$this->valid_options();
 	}
 
 	function __destruct() {
 	}
 
-	/// オプションを正常値にする
-	function valid_options() {
+	/// オプションを取得する
+	function get_option($name = false) {
 		$default_options = array(
 								'custom_button_home' => 'button_count',
 								'custom_button_page' => 'button_count'
@@ -45,19 +43,32 @@ class SmartSocialShare {
 
 		if (! is_array($opts)) {
 			update_option(self::OPTION_NAME, $default_options);
+			$opts = $default_options;
 		} else {
 			$update = false;
 
-			foreach ( $default_options as $key => $value ) {
-				if (! array_key_exists($key, $opts)) {
-					$opts[$key] = $value;
+			if ($name) {
+				if (! array_key_exists($name, $opts)) {
+					$opts[$name] = $default_options[$key];
 					$update = true;
+				}
+			} else {
+				foreach ( $default_options as $key => $value ) {
+					if (! array_key_exists($key, $opts)) {
+						$opts[$key] = $value;
+						$update = true;
+					}
 				}
 			}
 
 			if ($update)
 				update_option(self::OPTION_NAME, $opts);
 		}
+
+		if ($name)
+			return $opts[$name];
+		else
+			return $opts;
 	}
 
 	/// メニューの追加
@@ -114,12 +125,7 @@ class SmartSocialShare {
 	}
 
 	function setting_custom_button($key) {
-		$opts = get_option(self::OPTION_NAME);
-
-		if (array_key_exists($key, $opts))
-			$value = $opts[$key];
-		else
-			$value = 'none';
+		$value = $this->get_option($key);
 
 		if (empty($this->button_kind_menu))
 			$this->button_kind_menu = array('none' => _('ボタンのみ'), 'button_count' => __('カウントあり（横）'), 'box_count' => __('カウントあり（縦）'));
@@ -254,13 +260,10 @@ class SmartSocialShare {
 
 	/// ボタンを追加
 	function add_buttons($content) {
-		$permalink = get_permalink();
-		$opts = get_option(self::OPTION_NAME);
-
 		if (is_single() or is_page())
-			$data_count = $opts['custom_button_page'];
+			$data_count = $this->get_option('custom_button_page');
 		else
-			$data_count = $opts['custom_button_home'];
+			$data_count = $this->get_option('custom_button_home');
 
 		$content .= $this->generate_button_container($data_count);
 
