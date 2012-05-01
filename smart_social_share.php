@@ -163,6 +163,20 @@ class SmartSocialShare {
 		return '<div class="'.join(' ', $classes).'">'.$text.'</div>';
 	}
 
+	/// 連想配列を連結して属性値の文字列を作成する
+	function atts_to_str($hash) {
+		$atts = array();
+
+		foreach ( $hash as $key => $value ) {
+			if ($value)
+				array_push($atts, $key.'="'.esc_attr($value).'"');
+			else
+				array_push($atts, $key);
+		}
+
+		return join(' ', $atts);
+	}
+
 	/// HTMLの生成
 	function generate_button_container($data_count = 'none') {
 		$content = '';
@@ -177,37 +191,42 @@ class SmartSocialShare {
 		$facebook_classes = array($button_class, 'facebook');
 
 		//
-		$plusone_atts = array('href="'.$permalink.'"');
-		$twitter_atts = array('data-url="'.$permalink.'"');
-		$fb_like_atts = array('data-href="'.$permalink.'"',
-							'data-show-faces="true"', 'data-send="false"', 'data-font="arial"');
+		$plusone_atts['href'] = $permalink;
+		$twitter_atts['data-url'] = $permalink;
+		$fb_like_atts = array(
+								'data-href' => $permalink,
+								'data-show-faces' => 'true',
+								'data-send' => 'false',
+								'data-font' => 'arial'
+							);
 
 		// Tweet するデータテキストを設定
-		array_push($twitter_atts, 'data-text="'.get_the_title().'"');
+		$twitter_atts['data-text'] = get_the_title();
 
 		switch ($data_count) {
 		case 'button_count':
 			array_push($container_classes, 'button-count');
-			array_push($plusone_atts, 'size="medium"');
-			array_push($fb_like_atts, 'data-layout="button_count"');
+			$plusone_atts['size'] = 'medium';
+			$fb_like_atts['data-layout'] = 'button_count';
 			break;
 		case 'box_count':
 			array_push($container_classes, 'box-count');
-			array_push($plusone_atts, 'size="tall"');
-			array_push($twitter_atts, 'data-count="vertical"');
-			array_push($fb_like_atts, 'data-layout="box_count"');
+			$plusone_atts['size'] = 'tall';
+			$twitter_atts['data-count'] = 'vertical';
+			$fb_like_atts['data-layout'] = 'box_count';
 			break;
 		default:
 			array_push($container_classes, 'none-count');
-			array_push($plusone_atts, 'size="medium"', 'count="false"');
-			array_push($twitter_atts, 'data-count="none"');
-			array_push($fb_like_atts, 'data-layout="button_count"');
+			$plusone_atts['size'] = 'medium';
+			$plusone_atts['count'] = 'false';
+			$twitter_atts['data-count'] = 'none';
+			$fb_like_atts['data-layout'] = 'button_count';
 			break;
 		}
 
-		$content .= $this->div('<g:plusone '.join(' ', $plusone_atts).'></g:plusone>', $plusone_classes);
-		$content .= $this->div('<a href="https://twitter.com/share" class="twitter-share-button" '.join(' ', $twitter_atts).'>Tweet</a>', $twitter_classes);
-		$content .= $this->div('<div class="fb-like" '.join(' ', $fb_like_atts).'></div>', $facebook_classes);
+		$content .= $this->div('<g:plusone '.$this->atts_to_str($plusone_atts).'></g:plusone>', $plusone_classes);
+		$content .= $this->div('<a href="https://twitter.com/share" class="twitter-share-button" '.$this->atts_to_str($twitter_atts).'>Tweet</a>', $twitter_classes);
+		$content .= $this->div('<div class="fb-like" '.$this->atts_to_str($fb_like_atts).'></div>', $facebook_classes);
 
 		return $this->div($content, $container_classes);
 	}
