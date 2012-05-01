@@ -18,6 +18,7 @@ function smart_social_share_uninstall() {
 
 class SmartSocialShare {
 	const CSS_FILE = 'smart_social_share.css';
+	const TEXTDOMAIN = 'smart_social_share';
 	const OPTION_GROUP = 'smart_social_share_options';
 	const OPTION_NAME = 'smart_social_share_options';
 	const SETTING_SECTION = 'smart_social_share_options';
@@ -26,6 +27,8 @@ class SmartSocialShare {
 	public $button_kind_menu;
 
 	function __construct() {
+		load_theme_textdomain(self::TEXTDOMAIN, plugin_dir_path(__FILE__).'/languages');
+
 		add_action('wp_enqueue_scripts', array($this, 'add_scripts'));
 		add_action('wp_footer', array($this, 'add_fb_script'));
 		add_filter('the_content', array($this, 'add_buttons'));
@@ -103,7 +106,7 @@ class SmartSocialShare {
 
 	/// 設定の登録
 	function settings_api_init() {
-		add_settings_section(self::SETTING_SECTION, __('ボタンの表示方法'),
+		add_settings_section(self::SETTING_SECTION, __('Button Style', self::TEXTDOMAIN),
 			array($this, 'setting_section_callback'), self::SETTING_PAGE);
 
 		add_settings_field('setting_custom_home', __('Home'),
@@ -133,8 +136,13 @@ class SmartSocialShare {
 	function setting_custom_button($key) {
 		$value = $this->get_option($key);
 
-		if (empty($this->button_kind_menu))
-			$this->button_kind_menu = array('none' => _('ボタンのみ'), 'button_count' => __('カウントあり（横）'), 'box_count' => __('カウントあり（縦）'));
+		if (empty($this->button_kind_menu)) {
+			$this->button_kind_menu = array(
+					'none' =>  __('Button Only', self::TEXTDOMAIN),
+					'button_count' => __('Button Count', self::TEXTDOMAIN),
+					'box_count' => __('Box Count', self::TEXTDOMAIN)
+				);
+		}
 
 		$this->select_option($this->button_kind_menu, $value, self::OPTION_NAME."[$key]");
 	}
