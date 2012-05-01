@@ -12,14 +12,69 @@ License: (ライセンス名の「スラッグ」 例: GPL2)
 
 class SmartSocialShare {
 	const CSS_FILE = 'smart_social_share.css';
+	const DOMAIN = 'smart-social-share';
 
 	function __construct() {
 		add_action('wp_enqueue_scripts', array($this, 'add_scripts'));
 		add_action('wp_footer', array($this, 'add_fb_script'));
 		add_filter('the_content', array($this, 'add_buttons'));
+
+		// 設定
+		add_action('admin_menu', array($this, 'plugin_menu'));
+		add_action('admin_init', array($this, 'settings_api_init'));
 	}
 
 	function __destruct() {
+	}
+
+	// メニューの追加
+	function plugin_menu() {
+		add_options_page('Smart Social Share', 'Smart Social Share', 'manage_options', __FILE__, array($this, 'options_page'));
+	}
+
+	// 設定画面
+	function options_page() {
+		?>
+		<div class="wrap">
+			<?php screen_icon(); ?>
+			<h2> <?php echo esc_html('Smart Social Share') ?></h2>
+			<form method="POST" action="options.php">
+
+			<?php settings_fields(self::DOMAIN.'-settings'); ?>
+			<?php do_settings_sections('custom-count'); ?>
+
+			<p class="submit">
+				<input type="submit" value="<?php esc_attr_e(__('Save Changes')) ?>">
+			</p>
+			</form>
+		</div>
+		<?php
+	}
+
+	// 設定の登録
+	function settings_api_init() {
+		add_settings_section('eg_setting_section', 'Example settings section in reading',
+			array($this, 'setting_section_callback'), 'custom-count');
+
+		add_settings_field('eg_setting_name', 'Example setting Name',
+			array($this, 'setting_callback'), 'custom-count', 'eg_setting_section');
+
+		register_setting(self::DOMAIN.'-settings', 'eg_setting_name');
+	}
+
+	function setting_section_callback() {
+		echo '<p>Intro text for our settings section</p>';
+	}
+
+	function setting_callback() {
+		$value = get_option('eg_setting_name');
+		?>
+		<select name="eg_setting_name">
+			<option value="none" <?php selected( $value, 'none' ); ?>>ボタンのみ</option>
+			<option value="button_count" <?php selected( $value, 'button_count' ); ?>>カウントあり（横）</option>
+			<option value="box_count" <?php selected( $value, 'box_count' ); ?>>カウントあり（縦）</option>
+		</select>
+		<?php
 	}
 
 	/// ブログのロケールを ja_JP 形式で取得する
@@ -127,7 +182,7 @@ class SmartSocialShare {
 		if (is_single() or is_page())
 			$data_count = 'box_count';
 		else
-			$data_count = 'none';
+			$data_count = get_option('eg_setting_name');
 
 		$content .= $this->generate_button_container($data_count);
 
