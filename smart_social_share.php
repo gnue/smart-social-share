@@ -12,8 +12,10 @@ License: (ライセンス名の「スラッグ」 例: GPL2)
 
 class SmartSocialShare {
 	const CSS_FILE = 'smart_social_share.css';
-	const DOMAIN = 'smart-social-share';
-	const OPTIONS = 'smart-social-share-options';
+	const OPTION_GROUP = 'smart-social-share-options';
+	const OPTION_NAME = 'smart-social-share-options';
+	const SETTING_SECTION = 'smart-social-share-section';
+	const SETTING_PAGE = 'smart-social-share-page';
 
 	public $button_kind_menu;
 
@@ -28,11 +30,11 @@ class SmartSocialShare {
 
 		$this->button_kind_menu = array('none' => _('ボタンのみ'), 'button_count' => __('カウントあり（横）'), 'box_count' => __('カウントあり（縦）'));
 
-//		delete_option(self::OPTIONS);
-		$opts = get_option(self::OPTIONS);
+//		delete_option(self::OPTION_NAME);
+		$opts = get_option(self::OPTION_NAME);
 		if (! is_array($opts)) {
-			update_option(self::OPTIONS, array('custom_button_home' => 'button_count',
-											'custom_button_page' => 'button_count'));
+			update_option(self::OPTION_NAME, array('custom_button_home' => 'button_count',
+												'custom_button_page' => 'button_count'));
 		}
 	}
 
@@ -52,8 +54,8 @@ class SmartSocialShare {
 			<h2> <?php echo esc_html('Smart Social Share') ?></h2>
 			<form method="POST" action="options.php">
 
-			<?php settings_fields(self::DOMAIN.'-settings'); ?>
-			<?php do_settings_sections('custom-count'); ?>
+			<?php settings_fields(self::OPTION_GROUP); ?>
+			<?php do_settings_sections(self::SETTING_PAGE); ?>
 
 			<p class="submit">
 				<input type="submit" value="<?php esc_attr_e(__('Save Changes')) ?>">
@@ -65,20 +67,20 @@ class SmartSocialShare {
 
 	// 設定の登録
 	function settings_api_init() {
-		add_settings_section('eg_setting_section', 'Example settings section in reading',
-			array($this, 'setting_section_callback'), 'custom-count');
+		add_settings_section(self::SETTING_SECTION, __('ボタンの表示方法'),
+			array($this, 'setting_section_callback'), self::SETTING_PAGE);
 
 		add_settings_field('setting_custom_home', __('Home'),
-			array($this, 'setting_custom_home'), 'custom-count', 'eg_setting_section');
+			array($this, 'setting_custom_home'), self::SETTING_PAGE, self::SETTING_SECTION);
 
 		add_settings_field('setting_custom_page', __('Post').' / '.__('Page'),
-			array($this, 'setting_custom_page'), 'custom-count', 'eg_setting_section');
+			array($this, 'setting_custom_page'), self::SETTING_PAGE, self::SETTING_SECTION);
 
-		register_setting(self::DOMAIN.'-settings', self::OPTIONS);
+		register_setting(self::OPTION_GROUP, self::OPTION_NAME);
 	}
 
 	function setting_section_callback() {
-		echo '<p>Intro text for our settings section</p>';
+//		echo '<p></p>';
 	}
 
 	/// select タグでプルダウンメニューを作成する
@@ -93,10 +95,14 @@ class SmartSocialShare {
 	}
 
 	function setting_custom_button($key) {
-		$opts = get_option(self::OPTIONS);
-		$value = $opts[$key];
+		$opts = get_option(self::OPTION_NAME);
 
-		$this->select_option($this->button_kind_menu, $value, self::OPTIONS."[$key]");
+		if (array_key_exists($key, $opts))
+			$value = $opts[$key];
+		else
+			$value = 'none';
+
+		$this->select_option($this->button_kind_menu, $value, self::OPTION_NAME."[$key]");
 	}
 
 	function setting_custom_home() {
@@ -208,7 +214,7 @@ class SmartSocialShare {
 	/// ボタンを追加
 	function add_buttons($content) {
 		$permalink = get_permalink();
-		$opts = get_option(self::OPTIONS);
+		$opts = get_option(self::OPTION_NAME);
 
 		if (is_single() or is_page())
 			$data_count = $opts['custom_button_page'];
