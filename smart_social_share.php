@@ -28,23 +28,44 @@ class SmartSocialShare {
 		add_action('admin_menu', array($this, 'plugin_menu'));
 		add_action('admin_init', array($this, 'settings_api_init'));
 
-//		delete_option(self::OPTION_NAME);
-		$opts = get_option(self::OPTION_NAME);
-		if (! is_array($opts)) {
-			update_option(self::OPTION_NAME, array('custom_button_home' => 'button_count',
-												'custom_button_page' => 'button_count'));
-		}
+		$this->valid_options();
 	}
 
 	function __destruct() {
 	}
 
-	// メニューの追加
+	/// オプションを正常値にする
+	function valid_options() {
+		$default_options = array(
+								'custom_button_home' => 'button_count',
+								'custom_button_page' => 'button_count'
+							);
+
+		$opts = get_option(self::OPTION_NAME);
+
+		if (! is_array($opts)) {
+			update_option(self::OPTION_NAME, $default_options);
+		} else {
+			$update = false;
+
+			foreach ( $default_options as $key => $value ) {
+				if (! array_key_exists($key, $opts)) {
+					$opts[$key] = $value;
+					$update = true;
+				}
+			}
+
+			if ($update)
+				update_option(self::OPTION_NAME, $opts);
+		}
+	}
+
+	/// メニューの追加
 	function plugin_menu() {
 		add_options_page('Smart Social Share', 'Smart Social Share', 'manage_options', __FILE__, array($this, 'options_page'));
 	}
 
-	// 設定画面
+	/// 設定画面
 	function options_page() {
 		?>
 		<div class="wrap">
@@ -63,7 +84,7 @@ class SmartSocialShare {
 		<?php
 	}
 
-	// 設定の登録
+	/// 設定の登録
 	function settings_api_init() {
 		add_settings_section(self::SETTING_SECTION, __('ボタンの表示方法'),
 			array($this, 'setting_section_callback'), self::SETTING_PAGE);
