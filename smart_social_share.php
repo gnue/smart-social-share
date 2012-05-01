@@ -87,7 +87,7 @@ class SmartSocialShare {
 		?>
 		<div class="wrap">
 			<?php screen_icon(); ?>
-			<h2> <?php echo esc_html('Smart Social Share') ?></h2>
+			<h2> <?php echo esc_html('Smart Social Share').' '.__('Settings') ?></h2>
 			<form method="POST" action="options.php">
 
 			<?php settings_fields(self::OPTION_GROUP); ?>
