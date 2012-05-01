@@ -86,7 +86,7 @@ class SmartSocialShare {
 		echo '<select name="'.$name.'">';
 
 		foreach ( $menu as $key => $text ) {
-			echo '<option value="'.$key.'" '.selected($value, $key).'>'.esc_html($text).'</option>';
+			echo '<option value="'.esc_attr($key).'" '.selected($value, $key).'>'.esc_html($text).'</option>';
 		}
 
 		echo '</select>';
