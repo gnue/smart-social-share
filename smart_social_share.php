@@ -13,6 +13,7 @@ License: (ライセンス名の「スラッグ」 例: GPL2)
 class SmartSocialShare {
 	const CSS_FILE = 'smart_social_share.css';
 	const DOMAIN = 'smart-social-share';
+	const OPTIONS = 'smart-social-share-options';
 
 	function __construct() {
 		add_action('wp_enqueue_scripts', array($this, 'add_scripts'));
@@ -22,6 +23,13 @@ class SmartSocialShare {
 		// 設定
 		add_action('admin_menu', array($this, 'plugin_menu'));
 		add_action('admin_init', array($this, 'settings_api_init'));
+
+//		delete_option(self::OPTIONS);
+		$opts = get_option(self::OPTIONS);
+		if (! is_array($opts)) {
+			update_option(self::OPTIONS, array('custom_button_home' => 'button_count',
+											'custom_button_page' => 'button_count'));
+		}
 	}
 
 	function __destruct() {
@@ -56,25 +64,37 @@ class SmartSocialShare {
 		add_settings_section('eg_setting_section', 'Example settings section in reading',
 			array($this, 'setting_section_callback'), 'custom-count');
 
-		add_settings_field('eg_setting_name', 'Example setting Name',
-			array($this, 'setting_callback'), 'custom-count', 'eg_setting_section');
+		add_settings_field('setting_custom_home', __('Home'),
+			array($this, 'setting_custom_home'), 'custom-count', 'eg_setting_section');
 
-		register_setting(self::DOMAIN.'-settings', 'eg_setting_name');
+		add_settings_field('setting_custom_page', __('Post').' / '.__('Page'),
+			array($this, 'setting_custom_page'), 'custom-count', 'eg_setting_section');
+
+		register_setting(self::DOMAIN.'-settings', self::OPTIONS);
 	}
 
 	function setting_section_callback() {
 		echo '<p>Intro text for our settings section</p>';
 	}
 
-	function setting_callback() {
-		$value = get_option('eg_setting_name');
+	function setting_custom_button($key) {
+		$opts = get_option(self::OPTIONS);
+		$value = $opts[$key];
 		?>
-		<select name="eg_setting_name">
+		<select name="<?php echo self::OPTIONS."[$key]"; ?>">
 			<option value="none" <?php selected( $value, 'none' ); ?>>ボタンのみ</option>
 			<option value="button_count" <?php selected( $value, 'button_count' ); ?>>カウントあり（横）</option>
 			<option value="box_count" <?php selected( $value, 'box_count' ); ?>>カウントあり（縦）</option>
 		</select>
 		<?php
+	}
+
+	function setting_custom_home() {
+		$this->setting_custom_button('custom_button_home');
+	}
+
+	function setting_custom_page() {
+		$this->setting_custom_button('custom_button_page');
 	}
 
 	/// ブログのロケールを ja_JP 形式で取得する
@@ -178,11 +198,12 @@ class SmartSocialShare {
 	/// ボタンを追加
 	function add_buttons($content) {
 		$permalink = get_permalink();
+		$opts = get_option(self::OPTIONS);
 
 		if (is_single() or is_page())
-			$data_count = 'box_count';
+			$data_count = $opts['custom_button_page'];
 		else
-			$data_count = get_option('eg_setting_name');
+			$data_count = $opts['custom_button_home'];
 
 		$content .= $this->generate_button_container($data_count);
 
