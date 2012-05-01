@@ -10,6 +10,12 @@ Author URI: (プラグイン作者の URI)
 License: (ライセンス名の「スラッグ」 例: GPL2)
 */
 
+register_uninstall_hook(__FILE__, 'smart_social_share_uninstall');
+
+function smart_social_share_uninstall() {
+	delete_option(SmartSocialShare::OPTION_NAME);
+}
+
 class SmartSocialShare {
 	const CSS_FILE = 'smart_social_share.css';
 	const OPTION_GROUP = 'smart_social_share_options';
