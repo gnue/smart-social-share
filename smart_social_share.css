@@ -1,0 +1,22 @@
+.smart-social-share-container {
+	clear: both;
+	margin: 10px 0 10px;
+}
+
+.smart-social-share-button {
+	display: inline-block;
+	margin: 0 6px 0 0;
+	vertical-align: top;
+}
+
+.smart-social-share-button .facebook {
+	margin-bottom: 3px;
+}
+
+.button-count .plusone {
+	width: 70px;
+}
+
+.button-count .twitter {
+	width: 99px;
+}
