@@ -28,8 +28,6 @@ class SmartSocialShare {
 		add_action('admin_menu', array($this, 'plugin_menu'));
 		add_action('admin_init', array($this, 'settings_api_init'));
 
-		$this->button_kind_menu = array('none' => _('ボタンのみ'), 'button_count' => __('カウントあり（横）'), 'box_count' => __('カウントあり（縦）'));
-
 //		delete_option(self::OPTION_NAME);
 		$opts = get_option(self::OPTION_NAME);
 		if (! is_array($opts)) {
@@ -101,6 +99,9 @@ class SmartSocialShare {
 			$value = $opts[$key];
 		else
 			$value = 'none';
+
+		if (empty($this->button_kind_menu))
+			$this->button_kind_menu = array('none' => _('ボタンのみ'), 'button_count' => __('カウントあり（横）'), 'box_count' => __('カウントあり（縦）'));
 
 		$this->select_option($this->button_kind_menu, $value, self::OPTION_NAME."[$key]");
 	}
