@@ -183,7 +183,7 @@ class SmartSocialShare {
 			var valueSelector = '#<?php echo $id; ?>';
 
 			$(function() {
-				var list = [split($(valueSelector).attr('value'), ','), []];
+				var list = [split($(valueSelector).attr('value'), ' '), []];
 
 				// spelator で分割して前後の空白も取除く
 				function split(value, spelator) {
@@ -206,7 +206,7 @@ class SmartSocialShare {
 					update: function(event, ui) {
 						// データを更新
 						var result = $(this).sortable('toArray', {'attribute': 'name'});
-						$(valueSelector).attr('value', result.join(','));
+						$(valueSelector).attr('value', result.join(' '));
 					}
 				});
 
@@ -372,7 +372,7 @@ class SmartSocialShare {
 
 	/// ボタンを追加
 	function add_buttons($content) {
-		$buttons = preg_split('/\s*,\s*/', $this->get_option('buttons'));
+		$buttons = preg_split('/\s+/', $this->get_option('buttons'));
 		if (count($buttons) == 0) return $content;
 
 		if (is_single() or is_page())
