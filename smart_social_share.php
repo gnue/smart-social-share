@@ -17,12 +17,13 @@ function smart_social_share_uninstall() {
 }
 
 class SmartSocialShare {
-	const CSS_FILE = 'smart_social_share.css';
-	const TEXTDOMAIN = 'smart_social_share';
-	const OPTION_GROUP = 'smart_social_share_options';
-	const OPTION_NAME = 'smart_social_share_options';
-	const SETTING_SECTION = 'smart_social_share_options';
-	const SETTING_PAGE = 'smart_social_share_page';
+	const CSS_FILE			= 'smart_social_share.css';
+	const CSS_FILE_ADMIN	= 'smart_social_share_admin.css';
+	const TEXTDOMAIN		= 'smart_social_share';
+	const OPTION_GROUP		= 'smart_social_share_options';
+	const OPTION_NAME		= 'smart_social_share_options';
+	const SETTING_SECTION	= 'smart_social_share_options';
+	const SETTING_PAGE		= 'smart_social_share_page';
 
 	public $button_kind_menu;
 
@@ -36,6 +37,7 @@ class SmartSocialShare {
 		// 設定
 		add_action('admin_menu', array($this, 'plugin_menu'));
 		add_action('admin_init', array($this, 'settings_api_init'));
+		add_action('admin_init', array($this, 'add_admin_script'));
 	}
 
 	function __destruct() {
@@ -104,6 +106,17 @@ class SmartSocialShare {
 		<?php
 	}
 
+	/// 設定画面用のスクリプトを追加
+	function add_admin_script() {
+		wp_enqueue_script('jquery');
+		wp_enqueue_script('jquery-ui-core');
+		wp_enqueue_script('jquery-ui-widget');
+		wp_enqueue_script('jquery-ui-mouse');
+		wp_enqueue_script('jquery-ui-sortable');
+
+		wp_enqueue_style('my-css', plugin_dir_url(__FILE__).self::CSS_FILE_ADMIN);
+	}
+
 	/// 設定の登録
 	function settings_api_init() {
 		add_settings_section(self::SETTING_SECTION, __('Button Style', self::TEXTDOMAIN),
@@ -114,6 +127,9 @@ class SmartSocialShare {
 
 		add_settings_field('setting_custom_page', __('Post').' / '.__('Page'),
 			array($this, 'setting_custom_page'), self::SETTING_PAGE, self::SETTING_SECTION);
+
+		add_settings_field('setting_buttons', __('Show Buttons', self::TEXTDOMAIN),
+			array($this, 'setting_buttons'), self::SETTING_PAGE, self::SETTING_SECTION);
 
 		register_setting(self::OPTION_GROUP, self::OPTION_NAME);
 	}
@@ -138,9 +154,9 @@ class SmartSocialShare {
 
 		if (empty($this->button_kind_menu)) {
 			$this->button_kind_menu = array(
-					'none' =>  __('Button Only', self::TEXTDOMAIN),
-					'button_count' => __('Button Count', self::TEXTDOMAIN),
-					'box_count' => __('Box Count', self::TEXTDOMAIN)
+					'none'			=> __('Button Only', self::TEXTDOMAIN),
+					'button_count'	=> __('Button Count', self::TEXTDOMAIN),
+					'box_count'		=> __('Box Count', self::TEXTDOMAIN)
 				);
 		}
 
@@ -154,6 +170,76 @@ class SmartSocialShare {
 	function setting_custom_page() {
 		$this->setting_custom_button('custom_button_page');
 	}
+
+	function setting_buttons() {
+		$name = self::OPTION_NAME."[buttons]";
+		$id = self::OPTION_NAME."_buttons";
+		$buttons = $this->get_option('buttons');
+		?>
+		<script>
+		(function($) {
+			var menu = {'plusone': 'Google+', 'twitter': 'Twitter', 'fb_like': 'Facebook'};
+			var selectors = ['#smart_social_share_show_buttons', '#smart_social_share_hide_buttons'];
+			var valueSelector = '#<?php echo $id; ?>';
+
+			$(function() {
+				var list = [split($(valueSelector).attr('value'), ','), []];
+
+				// spelator で分割して前後の空白も取除く
+				function split(value, spelator) {
+					var a = value.split(spelator);
+					var result = [];
+
+					$.each(a, function(i, str) {
+						str = str.replace(/^\s+|\s+$/g, '');
+						if (str != '') result.push(str);
+					});
+
+					return result;
+				}
+
+				$(selectors.join(',')).sortable({
+					connectWith: '.connectedSortable'
+				}).disableSelection();
+
+				$(selectors[0]).sortable({
+					update: function(event, ui) {
+						// データを更新
+						var result = $(this).sortable('toArray', {'attribute': 'name'});
+						$(valueSelector).attr('value', result.join(','));
+					}
+				});
+
+				// list1 にない項目のリストを作成
+				for (var key in menu) {
+					if ($.inArray(key, list[0]) < 0) list[1].push(key);
+				}
+
+				for (i = 0; i < 2; i = i + 1) {
+					// リストの初期化
+					$.each(list[i], function(j, key) {
+						var li = $('<li>');
+
+						li.addClass('ui-dragbox');
+						li.attr('name', key);
+						li.text(menu[key]);
+
+						$(selectors[i]).append(li);
+					});
+				}
+			});
+
+		})(jQuery);
+		</script>
+
+		<ul id="smart_social_share_show_buttons" class="connectedSortable"></ul>
+		<ul id="smart_social_share_hide_buttons" class="connectedSortable"></ul>
+
+		<input type="hidden" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo $buttons; ?>">
+		<?php
+	}
+
+	//------------------------------------------------
 
 	/// ブログのロケールを ja_JP 形式で取得する
 	function blog_locale() {
@@ -219,7 +305,7 @@ class SmartSocialShare {
 	}
 
 	/// HTMLの生成
-	function generate_button_container($data_count = 'none') {
+	function generate_button_container($buttons, $data_count = 'none') {
 		$content = '';
 		$permalink = get_permalink();
 
@@ -265,21 +351,36 @@ class SmartSocialShare {
 			break;
 		}
 
-		$content .= $this->div('<g:plusone '.$this->atts_to_str($plusone_atts).'></g:plusone>', $plusone_classes);
-		$content .= $this->div('<a href="https://twitter.com/share" class="twitter-share-button" '.$this->atts_to_str($twitter_atts).'>Tweet</a>', $twitter_classes);
-		$content .= $this->div('<div class="fb-like" '.$this->atts_to_str($fb_like_atts).'></div>', $facebook_classes);
+		foreach ( $buttons as $key => $value ) {
+			switch ($value) {
+				case 'plusone':
+					$content .= $this->div('<g:plusone '.$this->atts_to_str($plusone_atts).'></g:plusone>', $plusone_classes);
+					break;
+
+				case 'twitter':
+					$content .= $this->div('<a href="https://twitter.com/share" class="twitter-share-button" '.$this->atts_to_str($twitter_atts).'>Tweet</a>', $twitter_classes);
+					break;
+
+				case 'fb_like':
+					$content .= $this->div('<div class="fb-like" '.$this->atts_to_str($fb_like_atts).'></div>', $facebook_classes);
+					break;
+			}
+		}
 
 		return $this->div($content, $container_classes);
 	}
 
 	/// ボタンを追加
 	function add_buttons($content) {
+		$buttons = preg_split('/\s*,\s*/', $this->get_option('buttons'));
+		if (count($buttons) == 0) return $content;
+
 		if (is_single() or is_page())
 			$data_count = $this->get_option('custom_button_page');
 		else
 			$data_count = $this->get_option('custom_button_home');
 
-		$content .= $this->generate_button_container($data_count);
+		$content .= $this->generate_button_container($buttons, $data_count);
 
 		return $content;
 	}
