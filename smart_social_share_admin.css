@@ -1,25 +1,61 @@
-.connectedSortable {
-	list-style-type: none;
+.sortable_list {
 	margin: 0;
 	float: left;
 	margin-right: 10px;
+
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	-webkit-border-radius: 6px;
+
+	background-color: #FDFDFD;
+}
+
+.sortable_list h3 {
+	margin: 0 0 10px;
+	color: #464646;
+	font-size: 15px;
+	font-weight: normal;
+	padding: 7px 10px;
+	margin: 0;
+	line-height: 1;
+	text-align: center;
+
+	background-color: #F1F1F1;
+	background-image: -webkit-linear-gradient(top,#F9F9F9,#ECECEC);
+	background-image: linear-gradient(top,#F9F9F9,#ECECEC);
+	-webkit-border-top-left-radius: 3px;
+	-webkit-border-top-right-radius: 3px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+
+	border-bottom: 1px solid #ccc;
+	text-shadow: white 0 1px 0;
+	-moz-box-shadow: 0 1px 0 white;
+	-webkit-box-shadow: 0 1px 0 white;
+	box-shadow: 0 1px 0 white;
+}
+
+.connectedSortable {
+	list-style-type: none;
+	margin: 0;
+	padding: 10px 5px 10px;
+	padding: 0;
 }
 
 .connectedSortable li {
 	margin: 0 5px 5px 5px;
+	margin: 5px 0 5px;
+	padding: 7px 9px;
 	padding: 7px 9px;
 	font-size: 12px;
-	width: 120px;
+	width: auto;
 	cursor: move;
 }
 
 ul.connectedSortable {
-	padding: 10px 5px 10px;
-	width: 150px;
-	height: 130px;
-	border: 1px solid #ccc;
-	border-radius: 6px;
-	-webkit-border-radius: 6px;
+	margin: 20px;
+	height: 200px;
+	width: 154px;
 }
 
 .ui-dragbox {

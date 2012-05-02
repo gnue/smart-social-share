@@ -232,8 +232,14 @@ class SmartSocialShare {
 		})(jQuery);
 		</script>
 
-		<ul id="smart_social_share_show_buttons" class="connectedSortable"></ul>
-		<ul id="smart_social_share_hide_buttons" class="connectedSortable"></ul>
+		<div class="sortable_list">
+			<h3><?php _e('Show'); ?></h3>
+			<ul id="smart_social_share_show_buttons" class="connectedSortable"></ul>
+		</div>
+		<div class="sortable_list">
+			<h3><?php _e('Disable'); ?></h3>
+			<ul id="smart_social_share_hide_buttons" class="connectedSortable"></ul>
+		</div>
 
 		<input type="hidden" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo $buttons; ?>">
 		<?php
