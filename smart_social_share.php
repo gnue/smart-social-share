@@ -154,7 +154,8 @@ class SmartSocialShare {
 
 		if (empty($this->button_kind_menu)) {
 			$this->button_kind_menu = array(
-					'none'			=> __('Button Only', self::TEXTDOMAIN),
+					'none'			=> __('None'),
+					'button'		=> __('Button Only', self::TEXTDOMAIN),
 					'button_count'	=> __('Button Count', self::TEXTDOMAIN),
 					'box_count'		=> __('Box Count', self::TEXTDOMAIN)
 				);
@@ -337,6 +338,8 @@ class SmartSocialShare {
 		$twitter_atts['data-text'] = get_the_title();
 
 		switch ($data_count) {
+		case 'none':
+			return;
 		case 'button_count':
 			array_push($container_classes, 'button-count');
 			$plusone_atts['size'] = 'medium';
@@ -348,13 +351,15 @@ class SmartSocialShare {
 			$twitter_atts['data-count'] = 'vertical';
 			$fb_like_atts['data-layout'] = 'box_count';
 			break;
-		default:
+		case 'button':
 			array_push($container_classes, 'none-count');
 			$plusone_atts['size'] = 'medium';
 			$plusone_atts['count'] = 'false';
 			$twitter_atts['data-count'] = 'none';
 			$fb_like_atts['data-layout'] = 'button_count';
 			break;
+		default:
+			return;
 		}
 
 		foreach ( $buttons as $key => $value ) {
