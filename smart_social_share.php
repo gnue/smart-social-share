@@ -27,6 +27,7 @@ class SmartSocialShare {
 	const SETTING_PAGE			= 'smart_social_share_page';
 
 	public $button_kind_menu;
+	public $default_options;
 
 	function __construct() {
 		load_theme_textdomain(self::TEXTDOMAIN, plugin_dir_path(__FILE__).'/languages');
@@ -44,29 +45,36 @@ class SmartSocialShare {
 	function __destruct() {
 	}
 
+	function default_options() {
+		return array(
+						'custom_button_home' => 'button_count',
+						'custom_button_page' => 'button_count',
+						'buttons' => 'gl_plusone tw_tweet fb_like'
+					);
+	}
+
 	/// オプションを取得する
 	function get_option($name = false) {
-		$default_options = array(
-								'custom_button_home' => 'button_count',
-								'custom_button_page' => 'button_count',
-								'buttons' => 'gl_plusone tw_tweet fb_like'
-							);
+		if (empty($this->default_options))
+			$this->default_options = $this->default_options();
 
 		$opts = get_option(self::OPTION_NAME);
 
 		if (! is_array($opts)) {
-			update_option(self::OPTION_NAME, $default_options);
-			$opts = $default_options;
+			if (! empty($opts))
+				delete_option(self::OPTION_NAME);
+
+			$opts = $this->default_options;
 		} else {
 			$update = false;
 
 			if ($name) {
 				if (! array_key_exists($name, $opts)) {
-					$opts[$name] = $default_options[$key];
+					$opts[$name] = $this->default_options[$key];
 					$update = true;
 				}
 			} else {
-				foreach ( $default_options as $key => $value ) {
+				foreach ( $this->default_options as $key => $value ) {
 					if (! array_key_exists($key, $opts)) {
 						$opts[$key] = $value;
 						$update = true;
