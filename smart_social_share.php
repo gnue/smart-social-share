@@ -47,8 +47,8 @@ class SmartSocialShare {
 
 	function default_options() {
 		return array(
-						'custom_button_home' => 'button_count',
-						'custom_button_page' => 'button_count',
+						'button_style_home' => 'button_count',
+						'button_style_page' => 'button_count',
 						'buttons' => 'gl_plusone tw_tweet fb_like'
 					);
 	}
@@ -178,11 +178,11 @@ class SmartSocialShare {
 	}
 
 	function setting_custom_home() {
-		$this->setting_custom_button('custom_button_home');
+		$this->setting_custom_button('button_style_home');
 	}
 
 	function setting_custom_page() {
-		$this->setting_custom_button('custom_button_page');
+		$this->setting_custom_button('button_style_page');
 	}
 
 	function setting_buttons() {
@@ -400,9 +400,9 @@ class SmartSocialShare {
 		if (count($buttons) == 0) return $content;
 
 		if (is_single() or is_page())
-			$data_count = $this->get_option('custom_button_page');
+			$data_count = $this->get_option('button_style_page');
 		else
-			$data_count = $this->get_option('custom_button_home');
+			$data_count = $this->get_option('button_style_home');
 
 		$content .= $this->generate_button_container($buttons, $data_count);
 
