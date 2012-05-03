@@ -17,13 +17,14 @@ function smart_social_share_uninstall() {
 }
 
 class SmartSocialShare {
-	const CSS_FILE			= 'smart_social_share.css';
-	const CSS_FILE_ADMIN	= 'smart_social_share_admin.css';
-	const TEXTDOMAIN		= 'smart_social_share';
-	const OPTION_GROUP		= 'smart_social_share_options';
-	const OPTION_NAME		= 'smart_social_share_options';
-	const SETTING_SECTION	= 'smart_social_share_options';
-	const SETTING_PAGE		= 'smart_social_share_page';
+	const CSS_FILE				= 'smart_social_share.css';
+	const CSS_FILE_ADMIN		= 'smart_social_share_admin.css';
+	const TEXTDOMAIN			= 'smart_social_share';
+	const OPTION_GROUP			= 'smart_social_share_options';
+	const OPTION_NAME			= 'smart_social_share_options';
+	const SETTING_SECTION_STYLE	= 'smart_social_share_options_style';
+	const SETTING_SECTION_LIST	= 'smart_social_share_options_list';
+	const SETTING_PAGE			= 'smart_social_share_page';
 
 	public $button_kind_menu;
 
@@ -119,17 +120,20 @@ class SmartSocialShare {
 
 	/// 設定の登録
 	function settings_api_init() {
-		add_settings_section(self::SETTING_SECTION, __('Button Style', self::TEXTDOMAIN),
+		add_settings_section(self::SETTING_SECTION_STYLE, __('Button Style', self::TEXTDOMAIN),
 			array($this, 'setting_section_callback'), self::SETTING_PAGE);
 
 		add_settings_field('setting_custom_home', __('Home'),
-			array($this, 'setting_custom_home'), self::SETTING_PAGE, self::SETTING_SECTION);
+			array($this, 'setting_custom_home'), self::SETTING_PAGE, self::SETTING_SECTION_STYLE);
 
 		add_settings_field('setting_custom_page', __('Post').' / '.__('Page'),
-			array($this, 'setting_custom_page'), self::SETTING_PAGE, self::SETTING_SECTION);
+			array($this, 'setting_custom_page'), self::SETTING_PAGE, self::SETTING_SECTION_STYLE);
+
+		add_settings_section(self::SETTING_SECTION_LIST, __('Button List', self::TEXTDOMAIN),
+			array($this, 'setting_section_callback'), self::SETTING_PAGE);
 
 		add_settings_field('setting_buttons', __('Show Buttons', self::TEXTDOMAIN),
-			array($this, 'setting_buttons'), self::SETTING_PAGE, self::SETTING_SECTION);
+			array($this, 'setting_buttons'), self::SETTING_PAGE, self::SETTING_SECTION_LIST);
 
 		register_setting(self::OPTION_GROUP, self::OPTION_NAME);
 	}

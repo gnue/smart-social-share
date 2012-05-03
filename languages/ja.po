@@ -21,6 +21,10 @@ msgstr ""
 msgid "Button Style"
 msgstr "ボタンの表示スタイル"
 
+#: smart_social_share.php:132
+msgid "Button List"
+msgstr "ボタン一覧"
+
 #: smart_social_share.php:131
 msgid "Show Buttons"
 msgstr "表示するボタン"
