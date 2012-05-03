@@ -48,7 +48,8 @@ class SmartSocialShare {
 	function get_option($name = false) {
 		$default_options = array(
 								'custom_button_home' => 'button_count',
-								'custom_button_page' => 'button_count'
+								'custom_button_page' => 'button_count',
+								'buttons' => 'gl_plusone tw_tweet fb_like'
 							);
 
 		$opts = get_option(self::OPTION_NAME);
