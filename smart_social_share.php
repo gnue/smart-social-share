@@ -87,7 +87,7 @@ class SmartSocialShareBase {
 
 /// 設定画面
 class SmartSocialShareOptions extends SmartSocialShareBase {
-	public $button_kind_menu;
+	public $button_style_menu;
 
 	function __construct() {
 		load_theme_textdomain(self::TEXTDOMAIN, plugin_dir_path(__FILE__).'/languages');
@@ -96,6 +96,16 @@ class SmartSocialShareOptions extends SmartSocialShareBase {
 		add_action('admin_menu', array($this, 'plugin_menu'));
 		add_action('admin_init', array($this, 'settings_api_init'));
 		add_action('admin_init', array($this, 'add_admin_script'));
+	}
+
+	/// ボタンのスタイル
+	function button_style_menu() {
+		return array(
+						'none'			=> __('None'),
+						'button'		=> __('Button Only', self::TEXTDOMAIN),
+						'button_count'	=> __('Button Count', self::TEXTDOMAIN),
+						'box_count'		=> __('Box Count', self::TEXTDOMAIN)
+					);
 	}
 
 	/// メニューの追加
@@ -184,16 +194,10 @@ class SmartSocialShareOptions extends SmartSocialShareBase {
 	function setting_custom_button($key) {
 		$value = $this->get_option($key);
 
-		if (empty($this->button_kind_menu)) {
-			$this->button_kind_menu = array(
-					'none'			=> __('None'),
-					'button'		=> __('Button Only', self::TEXTDOMAIN),
-					'button_count'	=> __('Button Count', self::TEXTDOMAIN),
-					'box_count'		=> __('Box Count', self::TEXTDOMAIN)
-				);
-		}
+		if (empty($this->button_style_menu))
+			$this->button_style_menu = $this->button_style_menu();
 
-		$this->select_option($this->button_kind_menu, $value, self::OPTION_NAME."[$key]");
+		$this->select_option($this->button_style_menu, $value, self::OPTION_NAME."[$key]");
 	}
 
 	function setting_custom_home() {
