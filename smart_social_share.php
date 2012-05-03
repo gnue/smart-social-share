@@ -123,7 +123,7 @@ class SmartSocialShare {
 		add_settings_section(self::SETTING_SECTION_STYLE, __('Button Style', self::TEXTDOMAIN),
 			array($this, 'setting_section_callback'), self::SETTING_PAGE);
 
-		add_settings_field('setting_custom_home', __('Home'),
+		add_settings_field('setting_custom_home', __('Home').' / '.__('Archive', self::TEXTDOMAIN),
 			array($this, 'setting_custom_home'), self::SETTING_PAGE, self::SETTING_SECTION_STYLE);
 
 		add_settings_field('setting_custom_page', __('Post').' / '.__('Page'),

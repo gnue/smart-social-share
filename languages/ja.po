@@ -29,6 +29,10 @@ msgstr "ボタン一覧"
 msgid "Show Buttons"
 msgstr "表示するボタン"
 
+#: smart_social_share.php:126
+msgid "Archive"
+msgstr "アーカイブ"
+
 #: smart_social_share.php:137
 msgid "Button Only"
 msgstr "ボタンのみ"
