@@ -161,11 +161,11 @@ class SmartSocialShareOptions extends SmartSocialShareBase {
 		add_settings_section(self::SETTING_SECTION_STYLE, __('Button Style', self::TEXTDOMAIN),
 			array($this, 'setting_section_callback'), self::SETTING_PAGE);
 
-		add_settings_field('setting_custom_home', __('Home').' / '.__('Archive', self::TEXTDOMAIN),
-			array($this, 'setting_custom_home'), self::SETTING_PAGE, self::SETTING_SECTION_STYLE);
+		add_settings_field('setting_button_style_home', __('Home').' / '.__('Archive', self::TEXTDOMAIN),
+			array($this, 'setting_button_style_home'), self::SETTING_PAGE, self::SETTING_SECTION_STYLE);
 
-		add_settings_field('setting_custom_page', __('Post').' / '.__('Page'),
-			array($this, 'setting_custom_page'), self::SETTING_PAGE, self::SETTING_SECTION_STYLE);
+		add_settings_field('setting_button_style_page', __('Post').' / '.__('Page'),
+			array($this, 'setting_button_style_page'), self::SETTING_PAGE, self::SETTING_SECTION_STYLE);
 
 		add_settings_section(self::SETTING_SECTION_LIST, __('Button List', self::TEXTDOMAIN),
 			array($this, 'setting_section_callback'), self::SETTING_PAGE);
@@ -191,7 +191,8 @@ class SmartSocialShareOptions extends SmartSocialShareBase {
 		echo '</select>';
 	}
 
-	function setting_custom_button($key) {
+	/// スタイルの設定
+	function setting_button_style($key) {
 		$value = $this->get_option($key);
 
 		if (empty($this->button_style_menu))
@@ -200,14 +201,17 @@ class SmartSocialShareOptions extends SmartSocialShareBase {
 		$this->select_option($this->button_style_menu, $value, self::OPTION_NAME."[$key]");
 	}
 
-	function setting_custom_home() {
-		$this->setting_custom_button('button_style_home');
+	/// ホーム・カーかイブの設定
+	function setting_button_style_home() {
+		$this->setting_button_style('button_style_home');
 	}
 
-	function setting_custom_page() {
-		$this->setting_custom_button('button_style_page');
+	/// 投稿・個別ページの設定
+	function setting_button_style_page() {
+		$this->setting_button_style('button_style_page');
 	}
 
+	/// ボタン一覧
 	function setting_buttons() {
 		$name = self::OPTION_NAME.'[buttons]';
 		$id = self::OPTION_NAME.'_buttons';
