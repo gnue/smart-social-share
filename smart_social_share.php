@@ -99,6 +99,14 @@ class SmartSocialShare {
 
 	/// 設定画面
 	function options_page() {
+		$reset_name = self::OPTION_NAME.'[reset]';
+		$opts = get_option(self::OPTION_NAME);
+
+		if (isset($opts['reset'])) {
+			// reset が設定されていたら設定値を削除する
+			delete_option(self::OPTION_NAME);
+		}
+
 		?>
 		<div class="wrap">
 			<?php screen_icon(); ?>
@@ -109,7 +117,9 @@ class SmartSocialShare {
 			<?php do_settings_sections(self::SETTING_PAGE); ?>
 
 			<p class="submit">
-				<input type="submit" value="<?php esc_attr_e(__('Save Changes')) ?>">
+				<input type="submit" value="<?php esc_attr_e(__('Save Changes')) ?>" class="button-primary">
+				<input type="submit" value="<?php esc_attr_e(__('Reset')) ?>" class="button-secondary" name="<?php echo $reset_name; ?>">
+				</form>
 			</p>
 			</form>
 		</div>
