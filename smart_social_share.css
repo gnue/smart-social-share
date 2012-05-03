@@ -9,6 +9,12 @@
 	vertical-align: top;
 }
 
+.smart-social-share-button.gl_plusone,
+.smart-social-share-button.tw_tweet,
+.smart-social-share-button.fb_like {
+	margin-right: 9px;
+}
+
 .smart-social-share-button.fb_like {
 	margin-bottom: 3px;
 }
