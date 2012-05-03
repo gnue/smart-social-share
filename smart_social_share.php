@@ -12,11 +12,18 @@ License: (ライセンス名の「スラッグ」 例: GPL2)
 
 register_uninstall_hook(__FILE__, 'smart_social_share_uninstall');
 
+new SmartSocialShare();
+new SmartSocialShareOptions();
+
+
+/// アンインストール処理
 function smart_social_share_uninstall() {
 	delete_option(SmartSocialShare::OPTION_NAME);
 }
 
-class SmartSocialShare {
+
+/// ベースクラス
+class SmartSocialShareBase {
 	const CSS_FILE				= 'smart_social_share.css';
 	const CSS_FILE_ADMIN		= 'smart_social_share_admin.css';
 	const TEXTDOMAIN			= 'smart_social_share';
@@ -26,25 +33,9 @@ class SmartSocialShare {
 	const SETTING_SECTION_LIST	= 'smart_social_share_options_list';
 	const SETTING_PAGE			= 'smart_social_share_page';
 
-	public $button_kind_menu;
 	public $default_options;
 
-	function __construct() {
-		load_theme_textdomain(self::TEXTDOMAIN, plugin_dir_path(__FILE__).'/languages');
-
-		add_action('wp_enqueue_scripts', array($this, 'add_scripts'));
-		add_action('wp_footer', array($this, 'add_fb_script'));
-		add_filter('the_content', array($this, 'add_buttons'));
-
-		// 設定
-		add_action('admin_menu', array($this, 'plugin_menu'));
-		add_action('admin_init', array($this, 'settings_api_init'));
-		add_action('admin_init', array($this, 'add_admin_script'));
-	}
-
-	function __destruct() {
-	}
-
+	// デフォルト設定
 	function default_options() {
 		return array(
 						'button_style_home' => 'button_count',
@@ -90,6 +81,21 @@ class SmartSocialShare {
 			return $opts[$name];
 		else
 			return $opts;
+	}
+}
+
+
+/// 設定画面
+class SmartSocialShareOptions extends SmartSocialShareBase {
+	public $button_kind_menu;
+
+	function __construct() {
+		load_theme_textdomain(self::TEXTDOMAIN, plugin_dir_path(__FILE__).'/languages');
+
+		// 設定
+		add_action('admin_menu', array($this, 'plugin_menu'));
+		add_action('admin_init', array($this, 'settings_api_init'));
+		add_action('admin_init', array($this, 'add_admin_script'));
 	}
 
 	/// メニューの追加
@@ -226,8 +232,16 @@ class SmartSocialShare {
 		<input type="hidden" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo $buttons; ?>">
 		<?php
 	}
+}
 
-	//------------------------------------------------
+
+/// 主機能
+class SmartSocialShare extends SmartSocialShareBase {
+	function __construct() {
+		add_action('wp_enqueue_scripts', array($this, 'add_scripts'));
+		add_action('wp_footer', array($this, 'add_fb_script'));
+		add_filter('the_content', array($this, 'add_buttons'));
+	}
 
 	/// ブログのロケールを ja_JP 形式で取得する
 	function blog_locale() {
@@ -378,4 +392,3 @@ class SmartSocialShare {
 	}
 }
 
-new SmartSocialShare();
