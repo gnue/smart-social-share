@@ -179,7 +179,7 @@ class SmartSocialShare {
 		?>
 		<script>
 		(function($) {
-			var menu = {'plusone': 'Google+', 'twitter': 'Twitter', 'fb_like': 'Facebook'};
+			var menu = {'gl_plusone': 'Google+', 'tw_tweet': 'Twitter', 'fb_like': 'Facebook'};
 			var selectors = ['#smart_social_share_show_buttons', '#smart_social_share_hide_buttons'];
 			var valueSelector = '#<?php echo $id; ?>';
 
@@ -320,9 +320,9 @@ class SmartSocialShare {
 		$container_classes = array('entry-meta', 'smart-social-share-container');
 
 		$button_class = 'smart-social-share-button';
-		$plusone_classes = array($button_class, 'plusone');
-		$twitter_classes = array($button_class, 'twitter');
-		$facebook_classes = array($button_class, 'facebook');
+		$plusone_classes = array($button_class, 'gl_plusone');
+		$twitter_classes = array($button_class, 'tw_tweet');
+		$facebook_classes = array($button_class, 'fb_like');
 
 		//
 		$plusone_atts['href'] = $permalink;
@@ -364,11 +364,11 @@ class SmartSocialShare {
 
 		foreach ( $buttons as $key => $value ) {
 			switch ($value) {
-				case 'plusone':
+				case 'gl_plusone':
 					$content .= $this->div('<g:plusone '.$this->atts_to_str($plusone_atts).'></g:plusone>', $plusone_classes);
 					break;
 
-				case 'twitter':
+				case 'tw_tweet':
 					$content .= $this->div('<a href="https://twitter.com/share" class="twitter-share-button" '.$this->atts_to_str($twitter_atts).'>Tweet</a>', $twitter_classes);
 					break;
 

@@ -9,18 +9,20 @@
 	vertical-align: top;
 }
 
-.smart-social-share-button .facebook {
+.smart-social-share-button.fb_like {
 	margin-bottom: 3px;
 }
 
-.button-count .plusone {
+/* button_count */
+.button-count .smart-social-share-button.gl_plusone {
 	width: 70px;
 }
 
-.button-count .twitter {
+.button-count .smart-social-share-button.tw_tweet {
 	width: 99px;
 }
 
-.box-count .plusone {
+/* box-count */
+.box-count .smart-social-share-button.gl_plusone {
 	margin-top: 2px;
 }
