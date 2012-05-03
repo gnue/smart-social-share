@@ -196,8 +196,8 @@ class SmartSocialShare {
 	}
 
 	function setting_buttons() {
-		$name = self::OPTION_NAME."[buttons]";
-		$id = self::OPTION_NAME."_buttons";
+		$name = self::OPTION_NAME.'[buttons]';
+		$id = self::OPTION_NAME.'_buttons';
 		$buttons = $this->get_option('buttons');
 		?>
 		<script>
