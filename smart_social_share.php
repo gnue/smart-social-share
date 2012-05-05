@@ -247,6 +247,7 @@ class SmartSocialShareOptions extends SmartSocialShareBase {
 class SmartSocialShare extends SmartSocialShareBase {
 	function __construct() {
 		add_action('wp_enqueue_scripts', array($this, 'add_scripts'));
+		add_action('wp_head', array($this, 'add_gl_script'));
 		add_action('wp_footer', array($this, 'add_fb_script'));
 		add_filter('the_content', array($this, 'add_buttons'));
 	}
@@ -262,6 +263,17 @@ class SmartSocialShare extends SmartSocialShareBase {
 			$locale = $locale_map[$locale];
 
 		return $locale;
+	}
+
+	/// Google+ の追加
+	function add_gl_script() {
+		$lang = preg_replace('/[-_].+$/', '', get_bloginfo('language'));
+		?>
+		<script type="text/javascript">
+		window.___gcfg = {lang: '<?php echo $lang; ?>'};
+		</script>
+		<script type='text/javascript' src='https://apis.google.com/js/plusone.js'></script>
+		<?php
 	}
 
 	/// Facebook SDK の追加
@@ -282,8 +294,11 @@ class SmartSocialShare extends SmartSocialShareBase {
 	/// スクリプトを追加
 	function add_scripts() {
 		// Google+
+		/* @attention 組込まれる順番が前後するためタイミングによりローカライズがうまく機能しない。代わりに wp_head でスクリプトを追加する */
+		/*
 		wp_register_script('plusone', 'https://apis.google.com/js/plusone.js');
 		wp_enqueue_script('plusone');
+		*/
 
 		// Twitter
 		wp_register_script('twitter', 'http://platform.twitter.com/widgets.js');
