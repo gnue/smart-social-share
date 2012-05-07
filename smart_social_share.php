@@ -286,6 +286,11 @@ class SmartSocialShare extends SmartSocialShareBase {
 
 	/// Facebook SDK の追加
 	function add_fb_script() {
+		$buttons = $this->get_buttons();
+		if (count($buttons) == 0) return;
+		if (! in_array('fb_like', $buttons)) return;
+		if ($this->get_data_count() == 'none') return;
+
 		$locale = $this->blog_locale();
 		?>
 		<div id="fb-root"></div>
@@ -301,16 +306,24 @@ class SmartSocialShare extends SmartSocialShareBase {
 
 	/// スクリプトを追加
 	function add_scripts() {
+		$buttons = $this->get_buttons();
+		if (count($buttons) == 0) return;
+		if ($this->get_data_count() == 'none') return;
+
 		$lang = preg_replace('/[-_].+$/', '', get_bloginfo('language'));
 
 		// Google+
-		wp_register_script('plusone', 'https://apis.google.com/js/plusone.js');
-		wp_enqueue_script('plusone');
-		wp_localize_script('plusone', '___gcfg', array('lang' => $lang));
+		if (in_array('gl_plusone', $buttons)) {
+			wp_register_script('plusone', 'https://apis.google.com/js/plusone.js');
+			wp_enqueue_script('plusone');
+			wp_localize_script('plusone', '___gcfg', array('lang' => $lang));
+		}
 
 		// Twitter
-		wp_register_script('twitter', 'http://platform.twitter.com/widgets.js');
-		wp_enqueue_script('twitter');
+		if (in_array('tw_tweet', $buttons)) {
+			wp_register_script('twitter', 'http://platform.twitter.com/widgets.js');
+			wp_enqueue_script('twitter');
+		}
 
 		// Facebook
 		/* @attention ver= が入るためにうまく動作しない。代わりに wp_footer でスクリプトを追加する */
