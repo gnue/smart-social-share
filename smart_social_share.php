@@ -82,6 +82,26 @@ class SmartSocialShareBase {
 		else
 			return $opts;
 	}
+
+	/// ボタン一覧を array で取得
+	function get_buttons() {
+		$buttons = preg_split('/\s+/', $this->get_option('buttons'));
+
+		if (0 < count($buttons) && empty($buttons[0]))
+			return array();
+
+		return $buttons;
+	}
+
+	/// ボタンスタイルを取得
+	function get_data_count() {
+		if (is_single() or is_page())
+			$key = 'button_style_page';
+		else
+			$key = 'button_style_home';
+
+		return $this->get_option($key);
+	}
 }
 
 
@@ -390,13 +410,10 @@ class SmartSocialShare extends SmartSocialShareBase {
 
 	/// ボタンを追加
 	function add_buttons($content) {
-		$buttons = preg_split('/\s+/', $this->get_option('buttons'));
+		$buttons = $this->get_buttons();
 		if (count($buttons) == 0) return $content;
 
-		if (is_single() or is_page())
-			$data_count = $this->get_option('button_style_page');
-		else
-			$data_count = $this->get_option('button_style_home');
+		$data_count = $this->get_data_count();
 
 		$content .= $this->generate_button_container($buttons, $data_count);
 
