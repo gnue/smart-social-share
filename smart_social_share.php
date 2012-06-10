@@ -2,12 +2,14 @@
 
 /*
 Plugin Name: Smart Social Share
-Plugin URI: (プラグインの説明と更新を示すページの URI)
-Description: Google+, Twitter, Facebook Like ボタンを追加する
-Version: (プラグインのバージョン番号。例: 1.0)
-Author: (プラグイン作者の名前)
-Author URI: (プラグイン作者の URI)
-License: (ライセンス名の「スラッグ」 例: GPL2)
+Plugin URI: https://github.com/gnue/smart-social-share
+Description: Add Google+, Twitter and Facebook Like buttons
+Version: 1.0
+Author: gnue
+Author URI: https://github.com/gnue
+License: GPL2
+Text Domain: smart_social_share
+Domain Path: /languages/
 */
 
 register_uninstall_hook(__FILE__, 'smart_social_share_uninstall');

@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+# Description
+msgid "Add Google+, Twitter and Facebook Like buttons"
+msgstr "Google+, Twitter, Facebook Like ボタンを追加する"
+
 #: smart_social_share.php:106
 msgid "Button Style"
 msgstr "ボタンの表示スタイル"
