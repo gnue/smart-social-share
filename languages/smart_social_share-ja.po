@@ -21,30 +21,23 @@ msgstr ""
 msgid "Add Google+, Twitter and Facebook Like buttons"
 msgstr "Google+, Twitter, Facebook Like ボタンを追加する"
 
-#: smart_social_share.php:106
 msgid "Button Style"
 msgstr "ボタンの表示スタイル"
 
-#: smart_social_share.php:132
 msgid "Button List"
 msgstr "ボタン一覧"
 
-#: smart_social_share.php:131
 msgid "Show Buttons"
 msgstr "表示するボタン"
 
-#: smart_social_share.php:126
 msgid "Archive"
 msgstr "アーカイブ"
 
-#: smart_social_share.php:137
 msgid "Button Only"
 msgstr "ボタンのみ"
 
-#: smart_social_share.php:137
 msgid "Button Count"
 msgstr "カウントあり（横）"
 
-#: smart_social_share.php:137
 msgid "Box Count"
 msgstr "カウントあり（縦）"

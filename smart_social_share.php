@@ -112,7 +112,7 @@ class SmartSocialShareOptions extends SmartSocialShareBase {
 	public $button_style_menu;
 
 	function __construct() {
-		load_theme_textdomain(self::TEXTDOMAIN, plugin_dir_path(__FILE__).'/languages');
+		load_plugin_textdomain(self::TEXTDOMAIN, false, basename(dirname(__FILE__)).'/languages');
 
 		// 設定
 		add_action('admin_menu', array($this, 'plugin_menu'));
